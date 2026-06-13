@@ -29,6 +29,14 @@ _SEND_SELECTORS = (
 )
 
 
+def build_summary_prompt(video_url: NormalizedUrl) -> str:
+    return (
+        "Summarize this video in Brazilian Portuguese. "
+        "Do not include timestamps in the summary. "
+        f"Video URL: {video_url}"
+    )
+
+
 @dataclass(frozen=True)
 class NewStableTextCriteria:
     stable_seconds: float
@@ -71,7 +79,7 @@ class GeminiWebsiteClient:
 
     def summarize(self, video_url: NormalizedUrl) -> str:
         self._open_gemini()
-        prompt = f"Summarize this video: {video_url}"
+        prompt = build_summary_prompt(video_url)
         baseline = self._latest_response_snapshot()
         self._submit_prompt(prompt)
         return wait_for_new_stable_response(

@@ -12,6 +12,7 @@ from yt_gemini.gemini import (
     ResponseSnapshot,
     _first_visible_locator,
     _login_required_visible,
+    build_summary_prompt,
     wait_for_new_stable_response,
     wait_for_new_stable_text,
     wait_for_stable_text,
@@ -176,6 +177,14 @@ def _new_response_criteria(
         baseline_text=baseline_text,
         ignored_text=ignored_text,
     )
+
+
+def test_summary_prompt_requests_brazilian_portuguese_without_timestamps() -> None:
+    prompt = build_summary_prompt("https://www.youtube.com/watch?v=abc123xyz00")
+
+    assert "Brazilian Portuguese" in prompt
+    assert "Do not include timestamps" in prompt
+    assert "https://www.youtube.com/watch?v=abc123xyz00" in prompt
 
 
 class SequenceSnapshotReader:
