@@ -48,6 +48,32 @@ def test_database_records_failed_video(tmp_path: Path) -> None:
     assert summary.error == "gemini timeout"
 
 
+def test_database_filters_recent_summaries_by_estimated_publish_time(
+    tmp_path: Path,
+) -> None:
+    database = SummaryDatabase(tmp_path / "app.sqlite3")
+    database.initialize()
+    old_video = _subscription_video(
+        video_id="old123xyz00",
+        title="Old video",
+        published_at=datetime(2026, 6, 12, 23, 59, tzinfo=UTC),
+    )
+    new_video = _subscription_video(
+        video_id="new123xyz00",
+        title="New video",
+        published_at=datetime(2026, 6, 13, 0, 0, tzinfo=UTC),
+    )
+    database.insert_pending(old_video, datetime(2026, 6, 13, 12, 0, tzinfo=UTC))
+    database.insert_pending(new_video, datetime(2026, 6, 13, 12, 5, tzinfo=UTC))
+
+    summaries = database.recent_summaries(
+        5,
+        since=datetime(2026, 6, 13, 0, 0, tzinfo=UTC),
+    )
+
+    assert [summary.title for summary in summaries] == ["New video"]
+
+
 def test_database_finishes_run(tmp_path: Path) -> None:
     database = SummaryDatabase(tmp_path / "app.sqlite3")
     database.initialize()
@@ -59,12 +85,15 @@ def test_database_finishes_run(tmp_path: Path) -> None:
     assert run_id == 1
 
 
-def _subscription_video() -> SubscriptionVideo:
-    published_at = datetime(2026, 6, 13, 11, 0, tzinfo=UTC)
+def _subscription_video(
+    video_id: str = "abc123xyz00",
+    title: str = "Video title",
+    published_at: datetime = datetime(2026, 6, 13, 11, 0, tzinfo=UTC),
+) -> SubscriptionVideo:
     return SubscriptionVideo(
-        video_id=VideoId("abc123xyz00"),
-        url=NormalizedUrl("https://www.youtube.com/watch?v=abc123xyz00"),
-        title="Video title",
+        video_id=VideoId(video_id),
+        url=NormalizedUrl(f"https://www.youtube.com/watch?v={video_id}"),
+        title=title,
         channel="Channel",
         published_label="1 hour ago",
         published_at_estimate=published_at,

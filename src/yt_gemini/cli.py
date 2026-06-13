@@ -1,6 +1,7 @@
 import argparse
 import sys
 from collections.abc import Sequence
+from datetime import UTC, datetime, time
 
 from yt_gemini.auth_server import serve_auth_browser
 from yt_gemini.clock import SystemClock
@@ -40,9 +41,22 @@ def _build_parser() -> argparse.ArgumentParser:
     subcommands = parser.add_subparsers(dest="command", required=True)
     subcommands.add_parser("auth-server", help="open noVNC login/debug browser")
     subcommands.add_parser("auth-check", help="verify YouTube and Gemini auth")
-    subcommands.add_parser("run", help="scrape YouTube and summarize new videos")
+    run_parser = subcommands.add_parser(
+        "run",
+        help="scrape YouTube and summarize new videos",
+    )
+    run_parser.add_argument(
+        "--since",
+        type=_parse_since,
+        help="only process videos with estimated publish time >= ISO date/datetime",
+    )
     list_parser = subcommands.add_parser("list", help="print stored summaries")
     list_parser.add_argument("--limit", type=int, default=10)
+    list_parser.add_argument(
+        "--since",
+        type=_parse_since,
+        help="only print videos with estimated publish time >= ISO date/datetime",
+    )
     return parser
 
 
@@ -53,9 +67,12 @@ def _dispatch(namespace: argparse.Namespace) -> int:
     if command == "auth-check":
         return _auth_check_command()
     if command == "run":
-        return _run_command()
+        return _run_command(_since_from_namespace(namespace))
     if command == "list":
-        return _list_command(_limit_from_namespace(namespace))
+        return _list_command(
+            _limit_from_namespace(namespace),
+            _since_from_namespace(namespace),
+        )
     raise AppError(f"command={command!r} must be a known subcommand")
 
 
@@ -74,9 +91,9 @@ def _auth_check_command() -> int:
     return _OPERATIONAL_FAILURE
 
 
-def _run_command() -> int:
+def _run_command(since: datetime | None) -> int:
     settings = load_settings()
-    report = execute_summary_run(settings, SystemClock())
+    report = execute_summary_run(settings, SystemClock(), since=since)
     log_run_report(JsonLogger(settings.log_path), report)
     _print_run_report(report)
     if report.counters.videos_failed:
@@ -84,11 +101,11 @@ def _run_command() -> int:
     return _SUCCESS
 
 
-def _list_command(limit: int) -> int:
+def _list_command(limit: int, since: datetime | None) -> int:
     settings = load_settings()
     database = SummaryDatabase(settings.database_path)
     database.initialize()
-    _print_summaries(database.recent_summaries(limit))
+    _print_summaries(database.recent_summaries(limit, since=since))
     return _SUCCESS
 
 
@@ -97,6 +114,29 @@ def _limit_from_namespace(namespace: argparse.Namespace) -> int:
     if limit > 0:
         return limit
     raise AppError(f"limit={limit!r} must be greater than 0")
+
+
+def _since_from_namespace(namespace: argparse.Namespace) -> datetime | None:
+    since = getattr(namespace, "since", None)
+    if since is None or isinstance(since, datetime):
+        return since
+    raise AppError(f"since={since!r} must be an ISO date or datetime")
+
+
+def _parse_since(raw: str) -> datetime:
+    value = raw.strip()
+    try:
+        if "T" not in value and " " not in value:
+            parsed = datetime.combine(datetime.fromisoformat(value).date(), time.min)
+        else:
+            parsed = datetime.fromisoformat(value)
+    except ValueError as err:
+        raise argparse.ArgumentTypeError(
+            f"since={raw!r} must be an ISO date or datetime"
+        ) from err
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=UTC)
+    return parsed
 
 
 def _print_auth_result(result: AuthCheckResult) -> None:

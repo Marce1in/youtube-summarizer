@@ -129,9 +129,19 @@ class SummaryDatabase:
                 (VideoStatus.FAILED.value, error, str(video_id)),
             )
 
-    def recent_summaries(self, limit: int) -> list[StoredVideoSummary]:
+    def recent_summaries(
+        self,
+        limit: int,
+        since: datetime | None = None,
+    ) -> list[StoredVideoSummary]:
         with self._connect() as connection:
-            rows = connection.execute(_RECENT_SUMMARIES_SQL, (limit,)).fetchall()
+            if since is None:
+                rows = connection.execute(_RECENT_SUMMARIES_SQL, (limit,)).fetchall()
+            else:
+                rows = connection.execute(
+                    _RECENT_SUMMARIES_SINCE_SQL,
+                    (since.isoformat(), limit),
+                ).fetchall()
         return [_summary_from_row(row) for row in rows]
 
     def _connect(self) -> sqlite3.Connection:
@@ -146,6 +156,16 @@ SELECT
     video_id, url, title, channel, published_label, published_at_estimate,
     discovered_at, summarized_at, status, summary, error
 FROM videos
+ORDER BY COALESCE(summarized_at, discovered_at) DESC
+LIMIT ?
+"""
+
+_RECENT_SUMMARIES_SINCE_SQL = """
+SELECT
+    video_id, url, title, channel, published_label, published_at_estimate,
+    discovered_at, summarized_at, status, summary, error
+FROM videos
+WHERE published_at_estimate >= ?
 ORDER BY COALESCE(summarized_at, discovered_at) DESC
 LIMIT ?
 """

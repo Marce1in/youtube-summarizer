@@ -100,6 +100,16 @@ With valid authentication, execute:
 docker compose run --rm app python -m yt_gemini run
 ```
 
+To process only videos whose estimated publish time is on or after an ISO date
+or datetime:
+
+```bash
+docker compose run --rm app python -m yt_gemini run --since 2026-06-13
+```
+
+`--since` uses the scraper's `published_at_estimate` field, not the official
+YouTube publish timestamp. Dates without timezone are interpreted as UTC.
+
 This command:
 
 - opens the YouTube subscriptions page;
@@ -142,6 +152,12 @@ Limit the output:
 
 ```bash
 docker compose run --rm app python -m yt_gemini list --limit 20
+```
+
+Filter by estimated publish time:
+
+```bash
+docker compose run --rm app python -m yt_gemini list --since 2026-06-13 --limit 20
 ```
 
 Each item can include:

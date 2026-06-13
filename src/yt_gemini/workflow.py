@@ -32,7 +32,11 @@ class SummaryResources:
     clock: Clock
 
 
-def execute_summary_run(settings: AppSettings, clock: Clock) -> RunReport:
+def execute_summary_run(
+    settings: AppSettings,
+    clock: Clock,
+    since: datetime | None = None,
+) -> RunReport:
     """Run one scrape/summarize cycle and persist results.
 
     Example:
@@ -46,7 +50,7 @@ def execute_summary_run(settings: AppSettings, clock: Clock) -> RunReport:
     display = DisplayServer(settings)
     counters = RunCounters()
     try:
-        counters = _execute_with_browser(settings, clock, database, display)
+        counters = _execute_with_browser(settings, clock, database, display, since)
         return _finish_report(database, run_id, counters, started_at, clock)
     except (AppError, PlaywrightError):
         database.finish_run(run_id, counters, clock.now())
@@ -76,12 +80,14 @@ def _execute_with_browser(
     clock: Clock,
     database: SummaryDatabase,
     display: DisplayServer,
+    since: datetime | None,
 ) -> RunCounters:
     display.start(enable_vnc=False)
     with BrowserSession(settings) as context:
         youtube_page = context.new_page()
         gemini_page = context.new_page()
         videos = _scrape_youtube_videos(youtube_page, settings, clock)
+        videos = _filter_videos_since(videos, since)
         gemini_client = GeminiWebsiteClient(gemini_page, settings, clock)
         resources = SummaryResources(
             database, gemini_client, gemini_page, settings, clock
@@ -102,6 +108,15 @@ def _scrape_youtube_videos(
         )
         message = failure_message(str(err), screenshot)
         raise BrowserAutomationError(message) from err
+
+
+def _filter_videos_since(
+    videos: list[SubscriptionVideo],
+    since: datetime | None,
+) -> list[SubscriptionVideo]:
+    if since is None:
+        return videos
+    return [video for video in videos if video.published_at_estimate >= since]
 
 
 def _process_videos(

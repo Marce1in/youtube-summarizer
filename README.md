@@ -61,6 +61,15 @@ docker compose run --rm app python -m yt_gemini run
 Esse comando busca vídeos recentes, envia as URLs ao Gemini e salva os resumos no
 SQLite.
 
+Para processar apenas vídeos publicados a partir de uma data estimada:
+
+```bash
+docker compose run --rm app python -m yt_gemini run --since 2026-06-13
+```
+
+`--since` aceita data ISO (`YYYY-MM-DD`) ou datetime ISO. Datas sem timezone são
+interpretadas como UTC.
+
 ## 5. Listar Resumos
 
 ```bash
@@ -71,6 +80,12 @@ Para limitar a quantidade exibida:
 
 ```bash
 docker compose run --rm app python -m yt_gemini list --limit 5
+```
+
+Para listar apenas vídeos publicados a partir de uma data estimada:
+
+```bash
+docker compose run --rm app python -m yt_gemini list --since 2026-06-13 --limit 20
 ```
 
 A listagem inclui canal, texto de publicação visto no YouTube, data estimada do
