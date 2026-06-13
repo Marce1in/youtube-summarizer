@@ -1,6 +1,6 @@
 # Youtube Summarizer
 
-Youtube Summarizer é uma automação privada que acessa a página de inscrições do
+Youtube Summarizer é uma automação que acessa a página de inscrições do
 YouTube, identifica vídeos recentes, envia cada URL para o site do Gemini e
 salva os resumos em um banco SQLite local.
 
