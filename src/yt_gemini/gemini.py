@@ -115,8 +115,12 @@ class GeminiWebsiteClient:
 
     def _prompt_box(self) -> Locator:
         for selector in _PROMPT_SELECTORS:
-            locator = self._page.locator(selector).last
-            if _is_visible(locator):
+            locator = _first_visible_locator(
+                self._page.locator(selector),
+                self._clock,
+                self._settings.operation_timeout_ms,
+            )
+            if locator is not None:
                 return locator
         raise BrowserAutomationError(
             f"gemini prompt selector={_PROMPT_SELECTORS!r} was not visible"
@@ -212,12 +216,31 @@ def _poll_delay(stable_seconds: float) -> float:
     return max(0.1, min(0.5, stable_seconds / 2))
 
 
-def _is_visible(locator: Locator) -> bool:
+def _is_visible(locator: Locator, timeout_ms: int = 1000) -> bool:
     try:
-        locator.wait_for(state="visible", timeout=1000)
+        locator.wait_for(state="visible", timeout=timeout_ms)
     except PlaywrightTimeoutError:
         return False
     return True
+
+
+def _first_visible_locator(
+    locator: Locator,
+    clock: Clock | None = None,
+    timeout_ms: int = 1000,
+) -> Locator | None:
+    deadline = None if clock is None else clock.monotonic() + timeout_ms / 1000
+    while True:
+        for index in range(locator.count()):
+            candidate = locator.nth(index)
+            if _is_visible(candidate):
+                return candidate
+        if clock is None:
+            return None
+        assert deadline is not None
+        if clock.monotonic() >= deadline:
+            return None
+        clock.sleep(0.5)
 
 
 def _click_if_visible(locator: Locator) -> bool:
@@ -286,4 +309,4 @@ def _login_required_visible(page: Page) -> bool:
     sign_in = page.get_by_text(
         re.compile(r"\b(sign in|fazer login|entrar)\b", re.IGNORECASE)
     )
-    return sign_in.first.count() > 0
+    return any(_is_visible(sign_in.nth(index)) for index in range(sign_in.count()))
