@@ -179,12 +179,14 @@ def _new_response_criteria(
     )
 
 
-def test_summary_prompt_requests_brazilian_portuguese_without_timestamps() -> None:
+def test_summary_prompt_requests_brazilian_portuguese() -> None:
     prompt = build_summary_prompt("https://www.youtube.com/watch?v=abc123xyz00")
 
-    assert "Brazilian Portuguese" in prompt
-    assert "Do not include timestamps" in prompt
-    assert "https://www.youtube.com/watch?v=abc123xyz00" in prompt
+    assert prompt == (
+        "Summarize this video in Brazilian Portuguese. "
+        "Video URL: https://www.youtube.com/watch?v=abc123xyz00"
+    )
+    assert "timestamp" not in prompt.lower()
 
 
 class SequenceSnapshotReader:

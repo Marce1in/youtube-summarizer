@@ -30,11 +30,7 @@ _SEND_SELECTORS = (
 
 
 def build_summary_prompt(video_url: NormalizedUrl) -> str:
-    return (
-        "Summarize this video in Brazilian Portuguese. "
-        "Do not include timestamps in the summary. "
-        f"Video URL: {video_url}"
-    )
+    return f"Summarize this video in Brazilian Portuguese. Video URL: {video_url}"
 
 
 @dataclass(frozen=True)
