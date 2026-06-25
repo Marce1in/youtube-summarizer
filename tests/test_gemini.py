@@ -4,9 +4,8 @@ import pytest
 from playwright.sync_api import Locator, Page
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
-from tests.fakes import FakeClock, SequenceTextReader
-from yt_gemini.errors import BrowserAutomationError
-from yt_gemini.gemini import (
+from errors import BrowserAutomationError
+from gemini import (
     NewStableResponseCriteria,
     NewStableTextCriteria,
     ResponseSnapshot,
@@ -17,6 +16,8 @@ from yt_gemini.gemini import (
     wait_for_new_stable_text,
     wait_for_stable_text,
 )
+from models import NormalizedUrl
+from tests.fakes import FakeClock, SequenceTextReader
 
 
 def test_wait_for_stable_text_returns_final_stable_text() -> None:
@@ -180,7 +181,9 @@ def _new_response_criteria(
 
 
 def test_summary_prompt_requests_brazilian_portuguese() -> None:
-    prompt = build_summary_prompt("https://www.youtube.com/watch?v=abc123xyz00")
+    video_url = NormalizedUrl("https://www.youtube.com/watch?v=abc123xyz00")
+
+    prompt = build_summary_prompt(video_url)
 
     assert prompt == (
         "Summarize this video in Brazilian Portuguese. "

@@ -3,14 +3,14 @@ import sys
 from collections.abc import Sequence
 from datetime import UTC, datetime, time
 
-from yt_gemini.auth_server import serve_auth_browser
-from yt_gemini.clock import SystemClock
-from yt_gemini.config import load_settings
-from yt_gemini.database import SummaryDatabase
-from yt_gemini.errors import AppError
-from yt_gemini.json_log import JsonLogger
-from yt_gemini.models import AuthCheckResult, RunReport, StoredVideoSummary
-from yt_gemini.workflow import execute_auth_check, execute_summary_run, log_run_report
+from auth_server import serve_auth_browser
+from clock import SystemClock
+from config import load_settings
+from database import SummaryDatabase
+from errors import AppError
+from json_log import JsonLogger
+from models import AuthCheckResult, RunReport, StoredVideoSummary
+from workflow import execute_auth_check, execute_summary_run, log_run_report
 
 _SUCCESS = 0
 _OPERATIONAL_FAILURE = 1
@@ -37,7 +37,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="yt-gemini")
+    parser = argparse.ArgumentParser(prog="youtube-summarizer")
     subcommands = parser.add_subparsers(dest="command", required=True)
     subcommands.add_parser("auth-server", help="open noVNC login/debug browser")
     subcommands.add_parser("auth-check", help="verify YouTube and Gemini auth")

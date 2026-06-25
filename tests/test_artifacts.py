@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
-from yt_gemini.artifacts import (
+from artifacts import (
     FailureScreenshot,
     capture_failure_screenshot,
     failure_message,

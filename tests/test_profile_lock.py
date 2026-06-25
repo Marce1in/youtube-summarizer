@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from yt_gemini.errors import BrowserProfileLockError
-from yt_gemini.profile_lock import BrowserProfileLock, remove_stale_chromium_locks
+from errors import BrowserProfileLockError
+from profile_lock import BrowserProfileLock, remove_stale_chromium_locks
 
 
 def test_browser_profile_lock_blocks_second_process(tmp_path: Path) -> None:

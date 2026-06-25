@@ -42,7 +42,7 @@ Depois disso, pare o serviço com `Ctrl+C`.
 ## 3. Verificar a Autenticação
 
 ```bash
-docker compose run --rm app python -m yt_gemini auth-check
+docker compose run --rm app youtube-summarizer auth-check
 ```
 
 Saída esperada:
@@ -55,7 +55,7 @@ YouTube subscriptions and Gemini are accessible.
 ## 4. Executar a Automação
 
 ```bash
-docker compose run --rm app python -m yt_gemini run
+docker compose run --rm app youtube-summarizer run
 ```
 
 Esse comando busca vídeos recentes, envia as URLs ao Gemini e salva os resumos no
@@ -64,7 +64,7 @@ SQLite.
 Para processar apenas vídeos publicados a partir de uma data estimada:
 
 ```bash
-docker compose run --rm app python -m yt_gemini run --since 2026-06-13
+docker compose run --rm app youtube-summarizer run --since 2026-06-13
 ```
 
 `--since` aceita data ISO (`YYYY-MM-DD`) ou datetime ISO. Datas sem timezone são
@@ -73,19 +73,19 @@ interpretadas como UTC.
 ## 5. Listar Resumos
 
 ```bash
-docker compose run --rm app python -m yt_gemini list
+docker compose run --rm app youtube-summarizer list
 ```
 
 Para limitar a quantidade exibida:
 
 ```bash
-docker compose run --rm app python -m yt_gemini list --limit 5
+docker compose run --rm app youtube-summarizer list --limit 5
 ```
 
 Para listar apenas vídeos publicados a partir de uma data estimada:
 
 ```bash
-docker compose run --rm app python -m yt_gemini list --since 2026-06-13 --limit 20
+docker compose run --rm app youtube-summarizer list --since 2026-06-13 --limit 20
 ```
 
 A listagem inclui canal, texto de publicação visto no YouTube, data estimada do
@@ -95,8 +95,8 @@ vídeo, data em que o scraper descobriu o vídeo e data em que o resumo foi salv
 
 O Docker Compose usa volumes nomeados:
 
-- `yt_gemini_browser_profile`: guarda o perfil do navegador e a sessão Google.
-- `yt_gemini_data`: guarda o SQLite, logs e screenshots de falhas.
+- `youtube_summarizer_browser_profile`: guarda o perfil do navegador e a sessão Google.
+- `youtube_summarizer_data`: guarda o SQLite, logs e screenshots de falhas.
 
 Apagar o volume do perfil remove a autenticação. Apagar o volume de dados remove
 histórico, resumos e logs.

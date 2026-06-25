@@ -1,7 +1,7 @@
 # Architecture
 
 The project is a frameworkless Python CLI. Composition happens explicitly in
-`yt_gemini.cli`, and external systems are isolated behind boundary modules.
+`src/cli.py`, and external systems are isolated behind boundary modules.
 
 ## Boundaries
 
@@ -28,4 +28,3 @@ Deleting it resets Google authentication.
 The implementation uses browser automation because the requested workflow depends
 on the logged-in YouTube and Gemini websites. Selectors are brittle by nature, so
 site-specific logic stays in adapter modules.
-

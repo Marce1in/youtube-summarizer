@@ -6,10 +6,10 @@ from playwright.sync_api import Error as PlaywrightError
 from playwright.sync_api import Locator, Page
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
-from yt_gemini.clock import Clock
-from yt_gemini.config import AppSettings
-from yt_gemini.errors import BrowserAutomationError
-from yt_gemini.models import NormalizedUrl
+from clock import Clock
+from config import AppSettings
+from errors import BrowserAutomationError
+from models import NormalizedUrl
 
 _PROMPT_SELECTORS = (
     "rich-textarea div[contenteditable='true']",

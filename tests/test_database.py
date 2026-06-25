@@ -1,8 +1,8 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
-from yt_gemini.database import SummaryDatabase
-from yt_gemini.models import (
+from database import SummaryDatabase
+from models import (
     NormalizedUrl,
     RunCounters,
     SubscriptionVideo,

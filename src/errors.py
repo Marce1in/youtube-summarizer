@@ -12,7 +12,7 @@ class ConfigError(AppError):
     """Raised when environment configuration is missing or malformed.
 
     Example:
-        raise ConfigError("YT_GEMINI_MAX_FEED_ITEMS='x' must be an integer")
+        raise ConfigError("YOUTUBE_SUMMARIZER_MAX_FEED_ITEMS='x' must be an integer")
     """
 
     exit_code = 2

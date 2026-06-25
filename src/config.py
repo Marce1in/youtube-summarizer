@@ -5,7 +5,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Literal, cast
 
-from yt_gemini.errors import ConfigError
+from errors import ConfigError
 
 BrowserChannel = Literal["chrome", "chrome-beta", "chromium"]
 
@@ -40,7 +40,7 @@ def load_settings(raw_environment: Mapping[str, str] | None = None) -> AppSettin
     """Load typed settings from environment variables.
 
     Example:
-        settings = load_settings({"YT_GEMINI_MAX_FEED_ITEMS": "20"})
+        settings = load_settings({"YOUTUBE_SUMMARIZER_MAX_FEED_ITEMS": "20"})
     """
 
     environment = os.environ if raw_environment is None else raw_environment
@@ -50,23 +50,27 @@ def load_settings(raw_environment: Mapping[str, str] | None = None) -> AppSettin
 def _settings_from_environment(environment: Mapping[str, str]) -> AppSettings:
     return AppSettings(
         database_path=_path_var(
-            environment, "YT_GEMINI_DATABASE_PATH", ".data/app.sqlite3"
+            environment, "YOUTUBE_SUMMARIZER_DATABASE_PATH", ".data/app.sqlite3"
         ),
         browser_profile_dir=_path_var(
-            environment, "YT_GEMINI_BROWSER_PROFILE_DIR", ".data/browser-profile"
+            environment,
+            "YOUTUBE_SUMMARIZER_BROWSER_PROFILE_DIR",
+            ".data/browser-profile",
         ),
         screenshot_dir=_path_var(
-            environment, "YT_GEMINI_SCREENSHOT_DIR", ".data/screenshots"
+            environment, "YOUTUBE_SUMMARIZER_SCREENSHOT_DIR", ".data/screenshots"
         ),
         log_path=_path_var(
-            environment, "YT_GEMINI_LOG_PATH", ".data/logs/automation.jsonl"
+            environment, "YOUTUBE_SUMMARIZER_LOG_PATH", ".data/logs/automation.jsonl"
         ),
         youtube_lookback=_lookback(environment),
-        max_feed_items=_int_var(environment, "YT_GEMINI_MAX_FEED_ITEMS", 100),
-        browser_headless=_bool_var(environment, "YT_GEMINI_HEADLESS", False),
-        browser_channel=_channel_var(environment, "YT_GEMINI_BROWSER_CHANNEL"),
-        display=_str_var(environment, "YT_GEMINI_DISPLAY", ":99"),
-        manage_display=_bool_var(environment, "YT_GEMINI_MANAGE_DISPLAY", False),
+        max_feed_items=_int_var(environment, "YOUTUBE_SUMMARIZER_MAX_FEED_ITEMS", 100),
+        browser_headless=_bool_var(environment, "YOUTUBE_SUMMARIZER_HEADLESS", False),
+        browser_channel=_channel_var(environment, "YOUTUBE_SUMMARIZER_BROWSER_CHANNEL"),
+        display=_str_var(environment, "YOUTUBE_SUMMARIZER_DISPLAY", ":99"),
+        manage_display=_bool_var(
+            environment, "YOUTUBE_SUMMARIZER_MANAGE_DISPLAY", False
+        ),
         viewport_width=_viewport_width(environment),
         viewport_height=_viewport_height(environment),
         navigation_timeout_ms=_navigation_timeout(environment),
@@ -76,55 +80,57 @@ def _settings_from_environment(environment: Mapping[str, str]) -> AppSettings:
         youtube_subscriptions_url=_youtube_subscriptions_url(environment),
         gemini_url=_gemini_url(environment),
         browser_home_dir=_path_var(
-            environment, "YT_GEMINI_BROWSER_HOME_DIR", "/home/pwuser"
+            environment, "YOUTUBE_SUMMARIZER_BROWSER_HOME_DIR", "/home/pwuser"
         ),
         auth_chrome_executable=_path_var(
-            environment, "YT_GEMINI_AUTH_CHROME_EXECUTABLE", "/usr/bin/google-chrome"
+            environment,
+            "YOUTUBE_SUMMARIZER_AUTH_CHROME_EXECUTABLE",
+            "/usr/bin/google-chrome",
         ),
     )
 
 
 def _lookback(environment: Mapping[str, str]) -> timedelta:
     return timedelta(
-        hours=_int_var(environment, "YT_GEMINI_YOUTUBE_LOOKBACK_HOURS", 24)
+        hours=_int_var(environment, "YOUTUBE_SUMMARIZER_YOUTUBE_LOOKBACK_HOURS", 24)
     )
 
 
 def _viewport_width(environment: Mapping[str, str]) -> int:
-    return _int_var(environment, "YT_GEMINI_VIEWPORT_WIDTH", 1440)
+    return _int_var(environment, "YOUTUBE_SUMMARIZER_VIEWPORT_WIDTH", 1440)
 
 
 def _viewport_height(environment: Mapping[str, str]) -> int:
-    return _int_var(environment, "YT_GEMINI_VIEWPORT_HEIGHT", 1000)
+    return _int_var(environment, "YOUTUBE_SUMMARIZER_VIEWPORT_HEIGHT", 1000)
 
 
 def _navigation_timeout(environment: Mapping[str, str]) -> int:
-    return _int_var(environment, "YT_GEMINI_NAVIGATION_TIMEOUT_MS", 60000)
+    return _int_var(environment, "YOUTUBE_SUMMARIZER_NAVIGATION_TIMEOUT_MS", 60000)
 
 
 def _operation_timeout(environment: Mapping[str, str]) -> int:
-    return _int_var(environment, "YT_GEMINI_OPERATION_TIMEOUT_MS", 120000)
+    return _int_var(environment, "YOUTUBE_SUMMARIZER_OPERATION_TIMEOUT_MS", 120000)
 
 
 def _response_stable_seconds(environment: Mapping[str, str]) -> float:
-    return _float_var(environment, "YT_GEMINI_RESPONSE_STABLE_SECONDS", 3.0)
+    return _float_var(environment, "YOUTUBE_SUMMARIZER_RESPONSE_STABLE_SECONDS", 3.0)
 
 
 def _response_timeout_seconds(environment: Mapping[str, str]) -> float:
-    return _float_var(environment, "YT_GEMINI_RESPONSE_TIMEOUT_SECONDS", 240.0)
+    return _float_var(environment, "YOUTUBE_SUMMARIZER_RESPONSE_TIMEOUT_SECONDS", 240.0)
 
 
 def _youtube_subscriptions_url(environment: Mapping[str, str]) -> str:
     return _str_var(
         environment,
-        "YT_GEMINI_YOUTUBE_SUBSCRIPTIONS_URL",
+        "YOUTUBE_SUMMARIZER_YOUTUBE_SUBSCRIPTIONS_URL",
         "https://www.youtube.com/feed/subscriptions",
     )
 
 
 def _gemini_url(environment: Mapping[str, str]) -> str:
     return _str_var(
-        environment, "YT_GEMINI_GEMINI_URL", "https://gemini.google.com/app"
+        environment, "YOUTUBE_SUMMARIZER_GEMINI_URL", "https://gemini.google.com/app"
     )
 
 

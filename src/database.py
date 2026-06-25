@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-from yt_gemini.models import (
+from models import (
     NormalizedUrl,
     RunCounters,
     StoredVideoSummary,

@@ -38,4 +38,4 @@ RUN --mount=type=cache,target=/root/.cache/uv uv sync --locked \
 USER pwuser
 
 ENTRYPOINT ["tini", "--"]
-CMD ["python", "-m", "yt_gemini", "--help"]
+CMD ["youtube-summarizer", "--help"]

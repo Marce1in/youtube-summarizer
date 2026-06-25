@@ -4,23 +4,23 @@ from datetime import datetime
 from playwright.sync_api import BrowserContext, Page
 from playwright.sync_api import Error as PlaywrightError
 
-from yt_gemini.artifacts import capture_failure_screenshot, failure_message
-from yt_gemini.browser_session import BrowserSession
-from yt_gemini.clock import Clock
-from yt_gemini.config import AppSettings
-from yt_gemini.database import SummaryDatabase
-from yt_gemini.display_server import DisplayServer
-from yt_gemini.errors import AppError, BrowserAutomationError
-from yt_gemini.gemini import GeminiWebsiteClient
-from yt_gemini.json_log import JsonLogger
-from yt_gemini.models import (
+from artifacts import capture_failure_screenshot, failure_message
+from browser_session import BrowserSession
+from clock import Clock
+from config import AppSettings
+from database import SummaryDatabase
+from display_server import DisplayServer
+from errors import AppError, BrowserAutomationError
+from gemini import GeminiWebsiteClient
+from json_log import JsonLogger
+from models import (
     AuthCheckResult,
     RunCounters,
     RunReport,
     SubscriptionVideo,
     VideoStatus,
 )
-from yt_gemini.youtube import YouTubeSubscriptionClient
+from youtube import YouTubeSubscriptionClient
 
 
 @dataclass(frozen=True)

@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 
-from yt_gemini.models import NormalizedUrl, SubscriptionVideo, VideoId
-from yt_gemini.workflow import _filter_videos_since
+from models import NormalizedUrl, SubscriptionVideo, VideoId
+from workflow import _filter_videos_since
 
 
 def test_filter_videos_since_uses_estimated_publish_time() -> None:

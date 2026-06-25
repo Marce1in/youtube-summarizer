@@ -2,13 +2,13 @@ from pathlib import Path
 
 import pytest
 
-from yt_gemini.config import load_settings
-from yt_gemini.display_server import build_display_specs, x11_socket_path
-from yt_gemini.errors import DisplayDependencyError
+from config import load_settings
+from display_server import build_display_specs, x11_socket_path
+from errors import DisplayDependencyError
 
 
 def test_build_display_specs_without_vnc() -> None:
-    settings = load_settings({"YT_GEMINI_MANAGE_DISPLAY": "true"})
+    settings = load_settings({"YOUTUBE_SUMMARIZER_MANAGE_DISPLAY": "true"})
 
     specs = build_display_specs(settings, enable_vnc=False)
 
@@ -16,7 +16,7 @@ def test_build_display_specs_without_vnc() -> None:
 
 
 def test_build_display_specs_with_vnc() -> None:
-    settings = load_settings({"YT_GEMINI_VIEWPORT_WIDTH": "1280"})
+    settings = load_settings({"YOUTUBE_SUMMARIZER_VIEWPORT_WIDTH": "1280"})
 
     specs = build_display_specs(settings, enable_vnc=True)
 

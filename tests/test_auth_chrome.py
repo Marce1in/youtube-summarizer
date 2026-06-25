@@ -4,17 +4,18 @@ from typing import cast
 
 import pytest
 
-from yt_gemini.auth_chrome import AuthChromeProcess, build_auth_chrome_command
-from yt_gemini.config import AppSettings, load_settings
-from yt_gemini.errors import BrowserAutomationError
-from yt_gemini.profile_lock import BrowserProfileLock
+from auth_chrome import AuthChromeProcess, build_auth_chrome_command
+from config import AppSettings, load_settings
+from errors import BrowserAutomationError
+from profile_lock import BrowserProfileLock
 
 
 def test_build_auth_chrome_command_uses_persistent_profile() -> None:
+    auth_executable_key = "YOUTUBE_SUMMARIZER_AUTH_CHROME_EXECUTABLE"
     settings = load_settings(
         {
-            "YT_GEMINI_BROWSER_PROFILE_DIR": "/browser-profile",
-            "YT_GEMINI_AUTH_CHROME_EXECUTABLE": "/usr/bin/google-chrome-stable",
+            "YOUTUBE_SUMMARIZER_BROWSER_PROFILE_DIR": "/browser-profile",
+            auth_executable_key: "/usr/bin/google-chrome-stable",
         }
     )
 
@@ -53,7 +54,7 @@ def test_auth_chrome_process_releases_profile_when_browser_exits_early(
     tmp_path: Path,
 ) -> None:
     settings = load_settings(
-        {"YT_GEMINI_BROWSER_PROFILE_DIR": str(tmp_path / "profile")}
+        {"YOUTUBE_SUMMARIZER_BROWSER_PROFILE_DIR": str(tmp_path / "profile")}
     )
     auth_chrome = AuthChromeProcess(settings, ExitedChromeStarter())
 

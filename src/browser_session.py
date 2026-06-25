@@ -10,9 +10,9 @@ from playwright.sync_api import (
     Error as PlaywrightError,
 )
 
-from yt_gemini.config import AppSettings
-from yt_gemini.errors import BrowserAutomationError
-from yt_gemini.profile_lock import BrowserProfileLock, remove_stale_chromium_locks
+from config import AppSettings
+from errors import BrowserAutomationError
+from profile_lock import BrowserProfileLock, remove_stale_chromium_locks
 
 
 class BrowserSession:

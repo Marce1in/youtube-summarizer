@@ -88,9 +88,9 @@ O fluxo final validado foi:
 
 1. subir o navegador de autenticação com `docker compose --profile auth up auth`;
 2. fazer login manualmente via noVNC;
-3. confirmar acesso com `python -m yt_gemini auth-check`;
-4. executar `python -m yt_gemini run`;
-5. listar resultados com `python -m yt_gemini list`.
+3. confirmar acesso com `youtube-summarizer auth-check`;
+4. executar `youtube-summarizer run`;
+5. listar resultados com `youtube-summarizer list`.
 
 A automação foi testada em execução real: o login foi validado, a página de
 inscrições do YouTube foi lida, URLs recentes foram enviadas ao Gemini e os

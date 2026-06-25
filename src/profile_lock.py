@@ -3,7 +3,7 @@ from pathlib import Path
 from types import TracebackType
 from typing import TextIO
 
-from yt_gemini.errors import BrowserAutomationError, BrowserProfileLockError
+from errors import BrowserAutomationError, BrowserProfileLockError
 
 _CHROMIUM_LOCK_FILES = ("SingletonLock", "SingletonCookie", "SingletonSocket")
 
@@ -33,7 +33,9 @@ class BrowserProfileLock:
 
     def acquire(self) -> None:
         self._profile_dir.mkdir(parents=True, exist_ok=True)
-        lock_file = (self._profile_dir / ".yt-gemini.lock").open("w", encoding="utf-8")
+        lock_file = (self._profile_dir / ".youtube-summarizer.lock").open(
+            "w", encoding="utf-8"
+        )
         try:
             fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as err:

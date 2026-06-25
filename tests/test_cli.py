@@ -3,9 +3,9 @@ from pathlib import Path
 
 import pytest
 
-from yt_gemini.cli import main
-from yt_gemini.database import SummaryDatabase
-from yt_gemini.models import NormalizedUrl, SubscriptionVideo, VideoId
+from cli import main
+from database import SummaryDatabase
+from models import NormalizedUrl, SubscriptionVideo, VideoId
 
 
 def test_list_command_prints_stored_dates(
@@ -20,7 +20,7 @@ def test_list_command_prints_stored_dates(
     summarized_at = datetime(2026, 6, 13, 12, 5, tzinfo=UTC)
     database.insert_pending(_subscription_video(), discovered_at)
     database.mark_summarized(VideoId("abc123xyz00"), "summary text", summarized_at)
-    monkeypatch.setenv("YT_GEMINI_DATABASE_PATH", str(database_path))
+    monkeypatch.setenv("YOUTUBE_SUMMARIZER_DATABASE_PATH", str(database_path))
 
     exit_code = main(["list", "--limit", "1"])
 
@@ -56,7 +56,7 @@ def test_list_command_filters_by_since_date(
         ),
         datetime(2026, 6, 13, 12, 5, tzinfo=UTC),
     )
-    monkeypatch.setenv("YT_GEMINI_DATABASE_PATH", str(database_path))
+    monkeypatch.setenv("YOUTUBE_SUMMARIZER_DATABASE_PATH", str(database_path))
 
     exit_code = main(["list", "--since", "2026-06-13", "--limit", "10"])
 
@@ -90,7 +90,7 @@ def test_list_command_filters_by_since_datetime(
         ),
         datetime(2026, 6, 13, 12, 5, tzinfo=UTC),
     )
-    monkeypatch.setenv("YT_GEMINI_DATABASE_PATH", str(database_path))
+    monkeypatch.setenv("YOUTUBE_SUMMARIZER_DATABASE_PATH", str(database_path))
 
     exit_code = main(["list", "--since", "2026-06-13T10:00:00+00:00"])
 

@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from yt_gemini.config import load_settings
-from yt_gemini.errors import ConfigError
+from config import load_settings
+from errors import ConfigError
 
 
 def test_load_settings_uses_typed_defaults() -> None:
@@ -17,22 +17,22 @@ def test_load_settings_uses_typed_defaults() -> None:
 
 
 def test_load_settings_allows_no_browser_channel() -> None:
-    settings = load_settings({"YT_GEMINI_BROWSER_CHANNEL": "none"})
+    settings = load_settings({"YOUTUBE_SUMMARIZER_BROWSER_CHANNEL": "none"})
 
     assert settings.browser_channel is None
 
 
 def test_load_settings_accepts_channel_override() -> None:
-    settings = load_settings({"YT_GEMINI_BROWSER_CHANNEL": "chromium"})
+    settings = load_settings({"YOUTUBE_SUMMARIZER_BROWSER_CHANNEL": "chromium"})
 
     assert settings.browser_channel == "chromium"
 
 
 def test_load_settings_rejects_bad_integer() -> None:
-    with pytest.raises(ConfigError, match="YT_GEMINI_MAX_FEED_ITEMS"):
-        load_settings({"YT_GEMINI_MAX_FEED_ITEMS": "many"})
+    with pytest.raises(ConfigError, match="YOUTUBE_SUMMARIZER_MAX_FEED_ITEMS"):
+        load_settings({"YOUTUBE_SUMMARIZER_MAX_FEED_ITEMS": "many"})
 
 
 def test_load_settings_rejects_bad_boolean() -> None:
-    with pytest.raises(ConfigError, match="YT_GEMINI_HEADLESS"):
-        load_settings({"YT_GEMINI_HEADLESS": "maybe"})
+    with pytest.raises(ConfigError, match="YOUTUBE_SUMMARIZER_HEADLESS"):
+        load_settings({"YOUTUBE_SUMMARIZER_HEADLESS": "maybe"})

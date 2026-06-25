@@ -2,8 +2,8 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from yt_gemini.errors import VideoUrlError
-from yt_gemini.youtube import (
+from errors import VideoUrlError
+from youtube import (
     compact_publish_label,
     estimate_published_at,
     extract_recent_publish_label,

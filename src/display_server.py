@@ -3,8 +3,8 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from yt_gemini.config import AppSettings
-from yt_gemini.errors import DisplayDependencyError
+from config import AppSettings
+from errors import DisplayDependencyError
 
 
 @dataclass(frozen=True)

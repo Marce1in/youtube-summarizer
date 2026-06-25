@@ -1,7 +1,7 @@
-from yt_gemini.auth_chrome import AuthChromeProcess
-from yt_gemini.clock import Clock
-from yt_gemini.config import AppSettings
-from yt_gemini.display_server import DisplayServer
+from auth_chrome import AuthChromeProcess
+from clock import Clock
+from config import AppSettings
+from display_server import DisplayServer
 
 
 def serve_auth_browser(settings: AppSettings, clock: Clock) -> None:

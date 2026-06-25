@@ -7,9 +7,9 @@ from urllib.parse import ParseResult, parse_qs, urljoin, urlparse
 from playwright.sync_api import Locator, Page
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
-from yt_gemini.config import AppSettings
-from yt_gemini.errors import BrowserAutomationError, VideoUrlError
-from yt_gemini.models import NormalizedUrl, SubscriptionVideo, VideoId
+from config import AppSettings
+from errors import BrowserAutomationError, VideoUrlError
+from models import NormalizedUrl, SubscriptionVideo, VideoId
 
 _VIDEO_CARD_SELECTOR = (
     "ytd-rich-item-renderer,ytd-grid-video-renderer,ytd-video-renderer"

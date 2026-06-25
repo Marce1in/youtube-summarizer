@@ -1,32 +1,32 @@
-x-yt-gemini-common: &yt-gemini-common
+x-youtube-summarizer-common: &youtube-summarizer-common
   build: .
-  image: trabalho-wagner-auto-redes:local
+  image: youtube-summarizer:local
   ipc: host
   environment:
     DISPLAY: ":99"
-    YT_GEMINI_BROWSER_PROFILE_DIR: /browser-profile
-    YT_GEMINI_DATABASE_PATH: /data/app.sqlite3
-    YT_GEMINI_DISPLAY: ":99"
-    YT_GEMINI_LOG_PATH: /data/logs/automation.jsonl
-    YT_GEMINI_MANAGE_DISPLAY: "true"
-    YT_GEMINI_SCREENSHOT_DIR: /data/screenshots
-    YT_GEMINI_BROWSER_CHANNEL: chrome
+    YOUTUBE_SUMMARIZER_BROWSER_PROFILE_DIR: /browser-profile
+    YOUTUBE_SUMMARIZER_DATABASE_PATH: /data/app.sqlite3
+    YOUTUBE_SUMMARIZER_DISPLAY: ":99"
+    YOUTUBE_SUMMARIZER_LOG_PATH: /data/logs/automation.jsonl
+    YOUTUBE_SUMMARIZER_MANAGE_DISPLAY: "true"
+    YOUTUBE_SUMMARIZER_SCREENSHOT_DIR: /data/screenshots
+    YOUTUBE_SUMMARIZER_BROWSER_CHANNEL: chrome
   volumes:
-    - yt_gemini_data:/data
-    - yt_gemini_browser_profile:/browser-profile
+    - youtube_summarizer_data:/data
+    - youtube_summarizer_browser_profile:/browser-profile
 
 services:
   app:
-    <<: *yt-gemini-common
-    command: ["python", "-m", "yt_gemini", "--help"]
+    <<: *youtube-summarizer-common
+    command: ["youtube-summarizer", "--help"]
 
   auth:
-    <<: *yt-gemini-common
+    <<: *youtube-summarizer-common
     profiles: ["auth"]
     ports:
       - "127.0.0.1:6080:6080"
-    command: ["python", "-m", "yt_gemini", "auth-server"]
+    command: ["youtube-summarizer", "auth-server"]
 
 volumes:
-  yt_gemini_data:
-  yt_gemini_browser_profile:
+  youtube_summarizer_data:
+  youtube_summarizer_browser_profile:

@@ -15,9 +15,9 @@ and ask a human to log in manually.
 - `app`: Docker service used for `auth-check`, `run`, and `list`.
 - `auth`: temporary Docker service that opens Chrome through noVNC for manual
   login.
-- `yt_gemini_browser_profile`: Docker volume with Google cookies and browser
+- `youtube_summarizer_browser_profile`: Docker volume with Google cookies and browser
   state.
-- `yt_gemini_data`: Docker volume with SQLite, logs, and screenshots.
+- `youtube_summarizer_data`: Docker volume with SQLite, logs, and screenshots.
 - `/data/app.sqlite3`: SQLite database inside the container.
 - `/data/logs/automation.jsonl`: structured run log.
 - `/data/screenshots`: screenshots captured on YouTube or Gemini failures.
@@ -45,7 +45,7 @@ docker compose build
 Before an important manual run, execute:
 
 ```bash
-docker compose run --rm app python -m yt_gemini auth-check
+docker compose run --rm app youtube-summarizer auth-check
 ```
 
 Expected success output:
@@ -97,14 +97,14 @@ After that, run `auth-check` again.
 With valid authentication, execute:
 
 ```bash
-docker compose run --rm app python -m yt_gemini run
+docker compose run --rm app youtube-summarizer run
 ```
 
 To process only videos whose estimated publish time is on or after an ISO date
 or datetime:
 
 ```bash
-docker compose run --rm app python -m yt_gemini run --since 2026-06-13
+docker compose run --rm app youtube-summarizer run --since 2026-06-13
 ```
 
 `--since` uses the scraper's `published_at_estimate` field, not the official
@@ -145,19 +145,19 @@ deciding the next action.
 List stored summaries:
 
 ```bash
-docker compose run --rm app python -m yt_gemini list
+docker compose run --rm app youtube-summarizer list
 ```
 
 Limit the output:
 
 ```bash
-docker compose run --rm app python -m yt_gemini list --limit 20
+docker compose run --rm app youtube-summarizer list --limit 20
 ```
 
 Filter by estimated publish time:
 
 ```bash
-docker compose run --rm app python -m yt_gemini list --since 2026-06-13 --limit 20
+docker compose run --rm app youtube-summarizer list --since 2026-06-13 --limit 20
 ```
 
 Each item can include:
@@ -211,26 +211,26 @@ If the error indicates a Gemini timeout or selector issue:
 
 - start the `auth` service;
 - ask a human to inspect Gemini through noVNC;
-- update selectors in `src/yt_gemini/gemini.py` if needed.
+- update selectors in `src/gemini.py` if needed.
 
 If the error indicates an empty YouTube subscriptions page:
 
 - confirm the account has subscriptions;
 - confirm the subscriptions page is logged in;
-- update selectors in `src/yt_gemini/youtube.py` if the interface changed.
+- update selectors in `src/youtube.py` if the interface changed.
 
 ## Scheduling
 
 For cron or systemd, schedule only:
 
 ```bash
-docker compose run --rm app python -m yt_gemini run
+docker compose run --rm app youtube-summarizer run
 ```
 
 Optionally list recent results after the run:
 
 ```bash
-docker compose run --rm app python -m yt_gemini list --limit 10
+docker compose run --rm app youtube-summarizer list --limit 10
 ```
 
 Do not schedule `auth-server`. It is only for manual intervention.
@@ -241,7 +241,7 @@ Do not schedule `auth-server`. It is only for manual intervention.
 - Do not save usernames, passwords, or 2FA codes.
 - Do not expose noVNC outside `localhost`.
 - Use SSH tunneling or Tailscale for remote access.
-- Do not delete `yt_gemini_browser_profile` unless intentionally resetting login.
+- Do not delete `youtube_summarizer_browser_profile` unless intentionally resetting login.
 - Do not run `auth-server`, `auth-check`, and `run` at the same time.
 - Do not move YouTube or Gemini selectors outside their adapter modules.
 
